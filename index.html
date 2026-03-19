@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Sprint Pro</title>
 
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iI2QzYTI3ZiIvPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTkyIiBmaWxsPSJub25lIiBzdHJva2U9IiM3OTU1NDgiIHN0cm9rZS13aWR0aD0iMjQiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjEyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNzk1NTQ4IiBzdHJva2Utd2lkdGg9IjI0Ii8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSI2NCIgZmlsbD0iIzc5NTU0OCIvPjxsaW5lIHgxPSIyNTYiIHkxPSIyNTYiIHgyPSI0NTAiIHkyPSI2MiIgc3Ryb2tlPSIjNzk1NTQ4IiBzdHJva2Utd2lkdGg9IjI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cG9seWdvbiBwb2ludHM9IjQ1MCw2MiAzODAsODAgNDAwLDEwMCA0NTAsNjIiIGZpbGw9IiM3OTU1NDgiLz48L3N2Zz4=">
-
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#795548">
 
     <link rel="manifest" href="./manifest.json">
-
-
+    
     <style>
         :root { 
             --muji-bg: #f6f5f1;      
@@ -34,18 +31,11 @@
             background-color: var(--muji-bg); 
             margin: 0; padding: 20px; color: var(--muji-text-dark); line-height: 1.6;
             -webkit-tap-highlight-color: transparent;
-            /* 為全螢幕模式留出頂部狀態欄空間 */
             padding-top: calc(20px + id="status-bar-height");
         }
         
-        /* 針對 iOS 全螢幕模式的凹槽處理 */
         @supports (padding-top: env(safe-area-inset-top)) {
-            body {
-                padding-top: env(safe-area-inset-top);
-                padding-left: env(safe-area-inset-left);
-                padding-right: env(safe-area-inset-right);
-                padding-bottom: env(safe-area-inset-bottom);
-            }
+            body { padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); padding-bottom: env(safe-area-inset-bottom); }
         }
 
         .container { max-width: 480px; margin: auto; }
@@ -58,7 +48,6 @@
         }
         
         .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
-        
         .act-icon-nav { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; }
         .act-icon-nav::-webkit-scrollbar { display: none; }
         
@@ -68,7 +57,6 @@
             cursor: pointer; background: white; flex-shrink: 0;
         }
         .nav-icon-item.active { border-color: var(--muji-accent); background: var(--muji-accent); }
-        
         .muji-icon { width: 22px; height: 22px; fill: none; stroke: var(--muji-primary); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
         .nav-icon-item.active .muji-icon { stroke: #ffffff; }
 
@@ -92,15 +80,28 @@
 
         .date-item {
             min-width: 70px; height: 90px; background-color: #fff;
-            border: 1px solid var(--muji-border); border-radius: 18px;
+            border: 1.5px solid var(--muji-border); border-radius: 18px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; flex-shrink: 0; position: relative;
+            cursor: pointer; flex-shrink: 0; position: relative; transition: 0.2s;
         }
         .date-item .day-label { font-size: 11px; color: var(--muji-sub-text); margin-bottom: 4px; font-weight: 700; }
         .date-item .date-val { font-size: 18px; font-weight: 600; color: var(--muji-primary); }
-        .date-item.is-today { border: 2px solid var(--muji-accent); }
-        .date-item.active { background-color: var(--muji-accent); border-color: var(--muji-accent); transform: translateY(-5px); }
-        .date-item.active .day-label, .date-item.active .date-val { color: #ffffff; }
+        
+        /* 樣式修正：今日樣式 */
+        .date-item.is-today { border: 2px solid var(--muji-accent-dark) !important; box-shadow: 0 0 10px rgba(211,162,127,0.15); }
+        
+        /* 樣式修正：最後一天樣式 (符合整體風格) */
+        .date-item.is-final-day { border-color: var(--muji-accent); }
+        .date-item.is-final-day::after {
+            content: "完"; position: absolute; top: -10px; right: -8px;
+            background-color: var(--muji-accent); color: white;
+            font-size: 9px; padding: 3px 6px; border-radius: 8px; font-weight: bold;
+        }
+
+        /* 樣式修正：選中樣式 (覆蓋所有其他樣式) */
+        .date-item.active { background-color: var(--muji-primary) !important; border-color: var(--muji-primary) !important; transform: translateY(-5px); }
+        .date-item.active .day-label, .date-item.active .date-val { color: #ffffff !important; }
+        .date-item.active.is-final-day::after { background-color: #ffffff; color: var(--muji-primary); }
 
         .stage-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; }
         .stage-selector::-webkit-scrollbar { display: none; }
@@ -188,14 +189,12 @@
 
         <div class="admin-section" id="adminArea">
             <h4 style="margin:0 0 15px 0;">活動管理設定</h4>
-            
             <label style="font-size:12px; color:var(--muji-sub-text);">選擇活動分類圖示：</label>
             <div class="category-selector">
                 <button class="cat-btn selected" onclick="setCategory('book')" id="cat-book"><svg class="muji-icon"><use xlink:href="#icon-book"/></svg></button>
                 <button class="cat-btn" onclick="setCategory('game')" id="cat-game"><svg class="muji-icon"><use xlink:href="#icon-game"/></svg></button>
                 <button class="cat-btn" onclick="setCategory('other')" id="cat-other"><svg class="muji-icon"><use xlink:href="#icon-other"/></svg></button>
             </div>
-
             <input type="text" id="nameIn" placeholder="活動名稱">
             <input type="text" id="unitIn" placeholder="單位 (如 pt / 頁)">
             <div style="display:flex; gap:10px;">
@@ -218,52 +217,20 @@
 </div>
 
 <script>
-    // ==========================================
-    // 離線 Service Worker 註冊代碼 (PWA 核心)
-    // ==========================================
+    // 離線 Service Worker 腳本 (Blob 動態註冊)
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            // 定義 Service Worker 腳本 (使用 Blob 動態註冊)
             const swCode = `
-                const CACHE_NAME = 'sprint-pro-cache-v2';
-                const urlsToCache = ['./', './index.html'];
-
-                self.addEventListener('install', event => {
-                    event.waitUntil(
-                        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-                    );
-                });
-
-                self.addEventListener('fetch', event => {
-                    event.respondWith(
-                        caches.match(event.request).then(response => {
-                            // 離線時優先使用快取，在線時嘗試更新
-                            return response || fetch(event.request);
-                        })
-                    );
-                });
-
-                self.addEventListener('activate', event => {
-                    event.waitUntil(
-                        caches.keys().then(cacheNames => {
-                            return Promise.all(
-                                cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
-                            );
-                        })
-                    );
-                });
+                const CACHE_NAME = 'sprint-pro-cache-v3';
+                const urlsToCache = ['./', './index.html', './manifest.json'];
+                self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))); });
+                self.addEventListener('fetch', event => { event.respondWith(caches.match(event.request).then(response => { return response || fetch(event.request); })); });
+                self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(cacheNames => { return Promise.all(cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))); })); });
             `;
             const blob = new Blob([swCode], { type: 'text/javascript' });
-            navigator.serviceWorker.register(URL.createObjectURL(blob)).then(reg => {
-                console.log('離線 ServiceWorker 註冊成功:', reg.scope);
-            }).catch(err => {
-                console.log('離線 ServiceWorker 註冊失敗:', err);
-            });
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
         });
     }
-    // ==========================================
-    // 原有應用程式邏輯 (調整版本號以強制更新快取)
-    // ==========================================
 
     let acts = JSON.parse(localStorage.getItem('reading_pro_v_pwa')) || {};
     let curId = localStorage.getItem('cur_pro_v_pwa') || '';
@@ -288,23 +255,8 @@
     }
 
     function toggleAdmin() { document.body.classList.toggle('show-admin'); if(document.body.classList.contains('show-admin')) renderTable(); }
-
-    function addGoal() {
-        const v = parseInt(document.getElementById('goalIn').value);
-        if(v > 0) { tempGoals.push(v); document.getElementById('goalIn').value=''; renderTempGoals(); }
-    }
-
-    function renderTempGoals() {
-        document.getElementById('tempGoalsArea').innerHTML = tempGoals.map((g, i) => `
-            <div class="goal-item">
-                <div style="display:flex; align-items:center;">
-                    <input type="radio" name="priorityChoice" ${i===priorityIdx?'checked':''} onchange="priorityIdx=${i}">
-                    <span>目標 ${i+1}: ${g}</span>
-                </div>
-                <span onclick="tempGoals.splice(${i},1);renderTempGoals()" style="color:var(--muji-warn); cursor:pointer; padding:0 5px;">✕</span>
-            </div>
-        `).join('');
-    }
+    function addGoal() { const v = parseInt(document.getElementById('goalIn').value); if(v > 0) { tempGoals.push(v); document.getElementById('goalIn').value=''; renderTempGoals(); } }
+    function renderTempGoals() { document.getElementById('tempGoalsArea').innerHTML = tempGoals.map((g, i) => `<div class="goal-item"><div style="display:flex; align-items:center;"><input type="radio" name="priorityChoice" ${i===priorityIdx?'checked':''} onchange="priorityIdx=${i}"><span>目標 ${i+1}: ${g}</span></div><span onclick="tempGoals.splice(${i},1);renderTempGoals()" style="color:var(--muji-warn); cursor:pointer; padding:0 5px;">✕</span></div>`).join(''); }
 
     function saveAct() {
         const name = document.getElementById('nameIn').value.trim() || '新活動';
@@ -343,20 +295,25 @@
 
     function renderStageBtns() {
         const a = acts[curId]; if(!a) return;
-        document.getElementById('stageBtns').innerHTML = a.goals.map((g, i) => `
-            <button class="stage-btn ${i===selectedStageIdx?'active':''} ${i===a.priorityIdx?'priority-target':''}" onclick="selectStage(${i})">
-                ${i===a.priorityIdx?'★ ':''}目標 ${i+1}
-            </button>`).join('');
+        document.getElementById('stageBtns').innerHTML = a.goals.map((g, i) => `<button class="stage-btn ${i===selectedStageIdx?'active':''} ${i===a.priorityIdx?'priority-target':''}" onclick="selectStage(${i})">${i===a.priorityIdx?'★ ':''}目標 ${i+1}</button>`).join('');
     }
 
+    // ★ 核心邏輯修正：計算不含最後一天，最後一天持平
     function updateUI() {
         const a = acts[curId]; if(!a) return;
         const unit = a.unit || 'min'; document.querySelectorAll('.unit-text').forEach(el => el.innerText = unit);
-        const s = new Date(a.start); s.setHours(0,0,0,0); const e = new Date(a.end); e.setHours(0,0,0,0);
+        const s = new Date(a.start); s.setHours(0,0,0,0);
+        const e = new Date(a.end); e.setHours(0,0,0,0);
+        
         const totalDays = Math.ceil((e - s) / 86400000) + 1;
         const dayIndex = Math.ceil((curDate - s) / 86400000) + 1;
         const stageGoal = a.goals[selectedStageIdx];
-        let target = (dayIndex > 0 && dayIndex <= totalDays) ? (stageGoal / totalDays) * dayIndex : (dayIndex > totalDays ? stageGoal : 0);
+        
+        // 分母用 totalDays - 1 (例如 27 天，分母用 26)
+        let divisor = totalDays > 1 ? totalDays - 1 : 1;
+        // 如果是最後一天或超過，目標鎖定在 stageGoal
+        let target = (dayIndex >= totalDays) ? stageGoal : (stageGoal / divisor) * dayIndex;
+
         document.getElementById('todayCumulativeTarget').innerHTML = `${Math.round(target)} <span style="font-size:16px">${unit}</span>`;
         document.getElementById('inputTotal').value = a.currentTotal || "";
         const progress = target > 0 ? Math.min(100, (a.currentTotal / target) * 100) : 0;
@@ -369,16 +326,24 @@
 
     function renderDateScroller() {
         const a = acts[curId]; if(!a) return;
-        const s = new Date(a.start); s.setHours(0,0,0,0); const totalDays = Math.ceil((new Date(a.end) - s) / 86400000) + 1;
+        const s = new Date(a.start); s.setHours(0,0,0,0);
+        const e = new Date(a.end); e.setHours(0,0,0,0);
+        const totalDays = Math.ceil((e - s) / 86400000) + 1;
         const scroller = document.getElementById('dateScroller'); scroller.innerHTML = '';
+        const todayTime = getToday().getTime();
+
         for(let i=0; i<totalDays; i++) {
             let d = new Date(s); d.setDate(s.getDate() + i);
+            let dTime = d.getTime();
+            let isFinalDay = (i === totalDays - 1); // 是否為最後一天
+            
             let item = document.createElement('div');
-            item.className = `date-item ${d.getTime()===curDate.getTime()?'active':''} ${d.getTime()===getToday().getTime()?'is-today':''}`;
+            // ★ 新增：最後一天與今日的樣式
+            item.className = `date-item ${dTime===curDate.getTime()?'active':''} ${dTime===todayTime?'is-today':''} ${isFinalDay?'is-final-day':''}`;
             item.innerHTML = `<span class="day-label">DAY ${i+1}</span><span class="date-val">${d.getMonth()+1}/${d.getDate()}</span>`;
             item.onclick = () => { curDate = d; renderDateScroller(); updateUI(); };
             scroller.appendChild(item);
-            if(d.getTime()===curDate.getTime()) setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 50);
+            if(dTime===curDate.getTime()) setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 50);
         }
     }
 
@@ -387,13 +352,28 @@
         const s = new Date(a.start); s.setHours(0,0,0,0);
         const totalDays = Math.ceil((new Date(a.end) - s) / 86400000) + 1;
         const stageGoal = a.goals[selectedStageIdx];
-        const today = getToday();
-        let h = `<table><tr><th>日期</th><th>累計目標 (${a.unit})</th></tr>`;
+        let divisor = totalDays > 1 ? totalDays - 1 : 1;
+        const todayTime = getToday().getTime();
+
+        let h = `<table><tr><th>日期</th><th>累計目標 (${a.unit})</th><th>備註</th></tr>`;
         for(let i=1; i<=totalDays; i++) {
             let d = new Date(s); d.setDate(s.getDate() + i - 1);
-            let t = (stageGoal / totalDays) * i;
-            let isT = d.getTime() === today.getTime();
-            h += `<tr style="${isT?'background-color:rgba(211, 162, 127, 0.1); font-weight:bold':''}"><td>DAY ${i} (${d.getMonth()+1}/${d.getDate()})</td><td>${Math.round(t)}</td></tr>`;
+            
+            // ★ 邏輯修正：最後一天目標持平
+            let t = (i >= totalDays) ? stageGoal : (stageGoal / divisor) * i;
+            let isFinalDay = (i === totalDays);
+            let isT = d.getTime() === todayTime;
+
+            // ★ 表格樣式優化：符合整體風格的高亮
+            let trStyle = "";
+            if(isFinalDay) trStyle = "background-color:rgba(211, 162, 127, 0.12); color:var(--muji-accent-dark);";
+            if(isT) trStyle += "font-weight:bold; border-left: 3px solid var(--muji-accent);";
+
+            h += `<tr style="${trStyle}">
+                    <td>DAY ${i} (${d.getMonth()+1}/${d.getDate()})</td>
+                    <td>${Math.round(t)}</td>
+                    <td style="font-size:11px;">${isFinalDay?'★完':''} ${isT?'(今)':''}</td>
+                  </tr>`;
         }
         document.getElementById('tableOut').innerHTML = h + `</table>`;
     }
