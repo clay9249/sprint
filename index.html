@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sprint Pro</title>
+
+    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/icons/svg?seed=book&backgroundColor=d3a27f&color=ffffff">
+    <meta name="apple-mobile-web-app-title" content="Sprint">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#795548">
+    
+    <style>
+        :root { 
+            --muji-bg: #f6f5f1;      
+            --muji-card: #ffffff;    
+            --muji-text-dark: #333333; 
+            --muji-sub-text: #7f8c8d; 
+            --muji-border: #e0dbd1;  
+            --muji-accent: #d3a27f;  
+            --muji-accent-dark: #b08e75; 
+            --muji-primary: #795548; 
+            --muji-warn: #b85c5c;    
+        }
+
+        body { 
+            font-family: -apple-system, "Noto Sans CJK TC", sans-serif; 
+            background-color: var(--muji-bg); 
+            margin: 0; padding: 20px; color: var(--muji-text-dark); line-height: 1.6;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container { max-width: 480px; margin: auto; }
+
+        .card { 
+            background-color: var(--muji-card); 
+            padding: 25px; border-radius: 24px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
+            margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.01);
+        }
+        
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
+        
+        .act-icon-nav { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; }
+        .act-icon-nav::-webkit-scrollbar { display: none; }
+        
+        .nav-icon-item {
+            width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--muji-border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; background: white; flex-shrink: 0;
+        }
+        .nav-icon-item.active { border-color: var(--muji-accent); background: var(--muji-accent); }
+        
+        .muji-icon { width: 22px; height: 22px; fill: none; stroke: var(--muji-primary); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-icon-item.active .muji-icon { stroke: #ffffff; }
+
+        .settings-btn { 
+            border: none; background: none; color: var(--muji-accent-dark); 
+            cursor: pointer; font-size: 26px; padding: 5px; 
+            display: flex; align-items: center; justify-content: center;
+            transform: rotate(110deg);
+        }
+
+        .category-selector { display: flex; gap: 8px; margin: 10px 0; }
+        .cat-btn {
+            flex: 1; height: 48px; border: 1px solid var(--muji-border); border-radius: 12px;
+            background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .cat-btn.selected { border-color: var(--muji-accent); background: #fffcf8; box-shadow: inset 0 0 0 1px var(--muji-accent); }
+        .cat-btn.selected .muji-icon { stroke: var(--muji-accent); }
+
+        .date-scroller { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px 25px 5px; scroll-behavior: smooth; }
+        .date-scroller::-webkit-scrollbar { display: none; }
+
+        .date-item {
+            min-width: 70px; height: 90px; background-color: #fff;
+            border: 1px solid var(--muji-border); border-radius: 18px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0; position: relative;
+        }
+        .date-item .day-label { font-size: 11px; color: var(--muji-sub-text); margin-bottom: 4px; font-weight: 700; }
+        .date-item .date-val { font-size: 18px; font-weight: 600; color: var(--muji-primary); }
+        .date-item.is-today { border: 2px solid var(--muji-accent); }
+        .date-item.active { background-color: var(--muji-accent); border-color: var(--muji-accent); transform: translateY(-5px); }
+        .date-item.active .day-label, .date-item.active .date-val { color: #ffffff; }
+
+        .stage-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; }
+        .stage-selector::-webkit-scrollbar { display: none; }
+        .stage-btn { 
+            background-color: #fff; border: 1px solid var(--muji-border); 
+            padding: 8px 16px; border-radius: 20px; white-space: nowrap; 
+            font-size: 13px; color: var(--muji-sub-text); transition: 0.2s;
+        }
+        .stage-btn.active { background-color: var(--muji-accent); color: white; border-color: var(--muji-accent); }
+        .stage-btn.priority-target { border: 2px solid var(--muji-primary); font-weight: bold; }
+
+        .progress-bar { 
+            height: 12px; background-color: #e0dbd1; 
+            background-image: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+            background-size: 20px 20px; animation: move-stripes 2s linear infinite; border-radius: 6px; overflow: hidden; margin: 15px 0; 
+        }
+        @keyframes move-stripes { from { background-position: 0 0; } to { background-position: 40px 0; } }
+        .progress-fill { height: 100%; background-color: var(--muji-primary); transition: width 0.6s; }
+        
+        .big-number-display { font-size: 42px; font-weight: 400; color: var(--muji-primary); margin: 5px 0; }
+        .input-section { background-color: var(--muji-primary); padding: 25px; border-radius: 20px; margin-top: 25px; }
+        
+        input[type="number"], input[type="text"], input[type="date"] { 
+            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid var(--muji-border); border-radius: 10px; box-sizing: border-box; 
+        }
+        input[type="number"].main-input { font-size: 32px; text-align: center; background-color: #ffffff; color: var(--muji-primary); font-weight: 600; border: none; }
+
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        .btn-blue { background-color: var(--muji-primary); color: white; }
+        
+        .admin-section { display: none; margin-top: 25px; border-top: 1px solid var(--muji-border); padding-top: 20px; }
+        .show-admin .admin-section { display: block; }
+
+        .goal-item {
+            display: flex; align-items: center; justify-content: space-between; 
+            margin-bottom: 8px; background: #fff; padding: 10px 12px; 
+            border-radius: 10px; border: 1px solid #eee; font-size: 13px;
+        }
+        .goal-item input[type="radio"] { width: auto; margin: 0 10px 0 0; accent-color: var(--muji-primary); }
+
+        /* 累計總表表格樣式 */
+        .table-container { overflow-x: auto; margin-top: 20px; background: #fff; border-radius: 12px; border: 1px solid var(--muji-border); }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background-color: #f1f0ec; padding: 12px 10px; text-align: left; color: var(--muji-sub-text); font-weight: 600; border-bottom: 1px solid var(--muji-border); }
+        td { border-bottom: 1px solid #f9f9f9; padding: 12px 10px; text-align: left; color: var(--muji-primary); }
+        tr:last-child td { border-bottom: none; }
+    </style>
+</head>
+<body>
+
+<svg style="display: none;">
+    <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+    <symbol id="icon-game" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11v.01M18 13v.01"/></symbol>
+    <symbol id="icon-other" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>
+</svg>
+
+<div class="container">
+    <div class="card">
+        <div class="header-controls">
+            <div class="act-icon-nav" id="actNav"></div>
+            <button class="settings-btn" onclick="toggleAdmin()">✎</button>
+        </div>
+
+        <div class="label-text" style="font-size: 13px; color: var(--muji-sub-text);">當前進度目標</div>
+        <div class="stage-selector" id="stageBtns"></div>
+
+        <div class="date-scroller" id="dateScroller"></div>
+
+        <div id="mainView" style="text-align:center;">
+            <div id="activeActName" style="font-size: 15px; font-weight: 700; color: var(--muji-accent-dark); margin-bottom: 5px;"></div>
+            <div class="label-text" style="font-size: 13px; color: var(--muji-sub-text);">今日應達累計目標</div>
+            <div class="big-number-display" id="todayCumulativeTarget">0 <span style="font-size:16px" class="unit-text"></span></div>
+
+            <div class="progress-bar"><div class="progress-fill" id="dayFill"></div></div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muji-sub-text);">
+                <span id="dayStatus">計算中...</span>
+                <span id="dayPercent">0%</span>
+            </div>
+
+            <div class="input-section">
+                <label style="font-weight:500; font-size:14px; color: #ffffff;">輸入目前總累計 <span class="unit-text"></span></label>
+                <input type="number" id="inputTotal" class="main-input" oninput="updateTotalLog()">
+                <div id="diffStatus" style="font-size:15px; margin-top:8px; font-weight:600;"></div>
+            </div>
+        </div>
+
+        <div class="admin-section" id="adminArea">
+            <h4 style="margin:0 0 15px 0;">活動管理設定</h4>
+            
+            <label style="font-size:12px; color:var(--muji-sub-text);">選擇活動分類圖示：</label>
+            <div class="category-selector">
+                <button class="cat-btn selected" onclick="setCategory('book')" id="cat-book"><svg class="muji-icon"><use xlink:href="#icon-book"/></svg></button>
+                <button class="cat-btn" onclick="setCategory('game')" id="cat-game"><svg class="muji-icon"><use xlink:href="#icon-game"/></svg></button>
+                <button class="cat-btn" onclick="setCategory('other')" id="cat-other"><svg class="muji-icon"><use xlink:href="#icon-other"/></svg></button>
+            </div>
+
+            <input type="text" id="nameIn" placeholder="活動名稱">
+            <input type="text" id="unitIn" placeholder="單位 (如 pt / 頁)">
+            <div style="display:flex; gap:10px;">
+                <input type="date" id="startIn">
+                <input type="date" id="endIn">
+            </div>
+            <div style="background:#f1f0ec; padding:15px; border-radius:12px; margin: 15px 0;">
+                <label style="font-size:13px;">設定各階段目標值：</label>
+                <div style="display:flex; gap:5px; margin-top:5px">
+                    <input type="number" id="goalIn" style="margin:0;">
+                    <button onclick="addGoal()" style="padding:0 20px; border-radius:8px; border:none; background-color:var(--muji-accent); color:white; font-weight:bold;">+</button>
+                </div>
+                <div id="tempGoalsArea" style="margin-top:12px;"></div>
+            </div>
+            <button class="btn btn-blue" onclick="saveAct()">儲存活動</button>
+            <button class="btn" style="color:var(--muji-warn); background:none;" onclick="delAct()">刪除此活動</button>
+            
+            <div class="table-container" id="tableOut"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let acts = JSON.parse(localStorage.getItem('reading_pro_v_final')) || {};
+    let curId = localStorage.getItem('cur_pro_v_final') || '';
+    let selectedCategory = 'book';
+    let priorityIdx = 0;
+    const iconMap = { 'book': '#icon-book', 'game': '#icon-game', 'other': '#icon-other' };
+
+    function getToday() { const d = new Date(); d.setHours(0,0,0,0); return d; }
+    let curDate = getToday();
+    let selectedStageIdx = 0;
+    let tempGoals = [];
+
+    function setCategory(catId) {
+        selectedCategory = catId;
+        document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('selected'));
+        if(document.getElementById(`cat-${catId}`)) document.getElementById(`cat-${catId}`).classList.add('selected');
+    }
+
+    function save() { 
+        localStorage.setItem('reading_pro_v_final', JSON.stringify(acts)); 
+        localStorage.setItem('cur_pro_v_final', curId);
+    }
+
+    function toggleAdmin() { document.body.classList.toggle('show-admin'); if(document.body.classList.contains('show-admin')) renderTable(); }
+
+    function addGoal() {
+        const v = parseInt(document.getElementById('goalIn').value);
+        if(v > 0) { tempGoals.push(v); document.getElementById('goalIn').value=''; renderTempGoals(); }
+    }
+
+    function renderTempGoals() {
+        document.getElementById('tempGoalsArea').innerHTML = tempGoals.map((g, i) => `
+            <div class="goal-item">
+                <div style="display:flex; align-items:center;">
+                    <input type="radio" name="priorityChoice" ${i===priorityIdx?'checked':''} onchange="priorityIdx=${i}">
+                    <span>目標 ${i+1}: ${g}</span>
+                </div>
+                <span onclick="tempGoals.splice(${i},1);renderTempGoals()" style="color:var(--muji-warn); cursor:pointer; padding:0 5px;">✕</span>
+            </div>
+        `).join('');
+    }
+
+    function saveAct() {
+        const name = document.getElementById('nameIn').value.trim() || '新活動';
+        const unit = document.getElementById('unitIn').value.trim() || 'min';
+        const start = document.getElementById('startIn').value;
+        const end = document.getElementById('endIn').value;
+        if(!start || !end || tempGoals.length === 0) return alert('請填寫完整資訊');
+        acts[name] = { start, end, unit, goals: [...tempGoals], category: selectedCategory, priorityIdx: priorityIdx, currentTotal: acts[name] ? acts[name].currentTotal : 0 };
+        curId = name; selectedStageIdx = priorityIdx; save(); init();
+    }
+
+    function delAct() { if(confirm('確定刪除？')) { delete acts[curId]; curId=Object.keys(acts)[0]||''; save(); init(); } }
+
+    function init() {
+        const keys = Object.keys(acts);
+        const nav = document.getElementById('actNav');
+        nav.innerHTML = keys.map(k => `<div class="nav-icon-item ${k===curId?'active':''}" onclick="switchAct('${k}')"><svg class="muji-icon"><use xlink:href="${iconMap[acts[k].category||'book']}"/></svg></div>`).join('');
+        if(!curId && keys.length > 0) curId = keys[0];
+        if(acts[curId]) {
+            const a = acts[curId]; tempGoals = [...a.goals]; priorityIdx = a.priorityIdx || 0;
+            document.getElementById('activeActName').innerText = curId;
+            document.getElementById('nameIn').value = curId;
+            document.getElementById('unitIn').value = a.unit || 'min';
+            document.getElementById('startIn').value = a.start;
+            document.getElementById('endIn').value = a.end;
+            setCategory(a.category || 'book'); renderTempGoals();
+            const s = new Date(a.start); const today = getToday();
+            curDate = (today >= s && today <= new Date(a.end)) ? today : s;
+            renderStageBtns(); renderDateScroller(); updateUI(); renderTable();
+        }
+    }
+
+    function switchAct(id) { curId = id; const a = acts[curId]; selectedStageIdx = a ? (a.priorityIdx || 0) : 0; save(); init(); }
+    function selectStage(idx) { selectedStageIdx = idx; renderStageBtns(); updateUI(); renderTable(); }
+    function updateTotalLog() { const val = parseInt(document.getElementById('inputTotal').value) || 0; if(acts[curId]) { acts[curId].currentTotal = val; save(); updateUI(); } }
+
+    function renderStageBtns() {
+        const a = acts[curId]; if(!a) return;
+        document.getElementById('stageBtns').innerHTML = a.goals.map((g, i) => `
+            <button class="stage-btn ${i===selectedStageIdx?'active':''} ${i===a.priorityIdx?'priority-target':''}" onclick="selectStage(${i})">
+                ${i===a.priorityIdx?'★ ':''}目標 ${i+1}
+            </button>`).join('');
+    }
+
+    function updateUI() {
+        const a = acts[curId]; if(!a) return;
+        const unit = a.unit || 'min'; document.querySelectorAll('.unit-text').forEach(el => el.innerText = unit);
+        const s = new Date(a.start); s.setHours(0,0,0,0); const e = new Date(a.end); e.setHours(0,0,0,0);
+        const totalDays = Math.ceil((e - s) / 86400000) + 1;
+        const dayIndex = Math.ceil((curDate - s) / 86400000) + 1;
+        const stageGoal = a.goals[selectedStageIdx];
+        let target = (dayIndex > 0 && dayIndex <= totalDays) ? (stageGoal / totalDays) * dayIndex : (dayIndex > totalDays ? stageGoal : 0);
+        document.getElementById('todayCumulativeTarget').innerHTML = `${Math.round(target)} <span style="font-size:16px">${unit}</span>`;
+        document.getElementById('inputTotal').value = a.currentTotal || "";
+        const progress = target > 0 ? Math.min(100, (a.currentTotal / target) * 100) : 0;
+        document.getElementById('dayFill').style.width = progress + '%';
+        document.getElementById('dayPercent').innerText = Math.round(progress) + '%';
+        const diff = (a.currentTotal || 0) - target;
+        document.getElementById('diffStatus').innerHTML = diff >= 0 ? `<span style="color:var(--muji-accent)">領先 ${Math.round(diff)} ${unit}</span>` : `<span style="color:#ffffff; opacity: 0.9;">還差 ${Math.abs(Math.round(diff))} ${unit}</span>`;
+        document.getElementById('dayStatus').innerText = diff >= 0 ? "穩定達成" : "衝刺中";
+    }
+
+    function renderDateScroller() {
+        const a = acts[curId]; if(!a) return;
+        const s = new Date(a.start); s.setHours(0,0,0,0); const totalDays = Math.ceil((new Date(a.end) - s) / 86400000) + 1;
+        const scroller = document.getElementById('dateScroller'); scroller.innerHTML = '';
+        for(let i=0; i<totalDays; i++) {
+            let d = new Date(s); d.setDate(s.getDate() + i);
+            let item = document.createElement('div');
+            item.className = `date-item ${d.getTime()===curDate.getTime()?'active':''} ${d.getTime()===getToday().getTime()?'is-today':''}`;
+            item.innerHTML = `<span class="day-label">DAY ${i+1}</span><span class="date-val">${d.getMonth()+1}/${d.getDate()}</span>`;
+            item.onclick = () => { curDate = d; renderDateScroller(); updateUI(); };
+            scroller.appendChild(item);
+            if(d.getTime()===curDate.getTime()) setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 50);
+        }
+    }
+
+    function renderTable() {
+        const a = acts[curId]; if(!a) return;
+        const s = new Date(a.start); s.setHours(0,0,0,0);
+        const totalDays = Math.ceil((new Date(a.end) - s) / 86400000) + 1;
+        const stageGoal = a.goals[selectedStageIdx];
+        const today = getToday();
+        let h = `<table><tr><th>日期</th><th>累計目標 (${a.unit})</th></tr>`;
+        for(let i=1; i<=totalDays; i++) {
+            let d = new Date(s); d.setDate(s.getDate() + i - 1);
+            let t = (stageGoal / totalDays) * i;
+            let isT = d.getTime() === today.getTime();
+            h += `<tr style="${isT?'background-color:rgba(211, 162, 127, 0.1); font-weight:bold':''}"><td>DAY ${i} (${d.getMonth()+1}/${d.getDate()})</td><td>${Math.round(t)}</td></tr>`;
+        }
+        document.getElementById('tableOut').innerHTML = h + `</table>`;
+    }
+    init();
+</script>
+</body>
+</html>
