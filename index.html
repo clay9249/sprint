@@ -2,14 +2,18 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Sprint Pro</title>
 
-    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/icons/svg?seed=book&backgroundColor=d3a27f&color=ffffff">
-    <meta name="apple-mobile-web-app-title" content="Sprint">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Sprint Pro 目標衝刺","short_name":"Sprint","start_url":".","display":"standalone","background_color":"#f6f5f1","theme_color":"#795548","icons":[{"src":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iI2QzYTI3ZiIvPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTkyIiBmaWxsPSJub25lIiBzdHJva2U9IiM3OTU1NDgiIHN0cm9rZS13aWR0aD0iMjQiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjEyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNzk1NTQ4IiBzdHJva2Utd2lkdGg9IjI0Ii8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiB5PSI2NCIgZmlsbD0iI3M3OTU1NDgiLz48bGluZSB4MT0iMjU2IiB5MT0iMjU2IiB4Mj0iNDgwIiB5Mj0iMzIiIHN0cm9rZT0iIzc5NTU0OCIgc3Ryb2tlLXdpZHRoPSIyNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBvbHlnb24gcG9pbnRzPSI0ODAsMzIgNDA4LDgwIDQzMiwxMDQgNDgwLDMyIiBmaWxsPSIjNzk1NTQ4Ii8+PC9zdmc+","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}'>
+
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iI2QzYTI3ZiIvPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTkyIiBmaWxsPSJub25lIiBzdHJva2U9IiM3OTU1NDgiIHN0cm9rZS13aWR0aD0iMjQiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjEyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNzk1NTQ4IiBzdHJva2Utd2lkdGg9IjI0Ii8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiB5PSI2NCIgZmlsbD0iI3M3OTU1NDgiLz48bGluZSB4MT0iMjU2IiB5MT0iMjU2IiB4Mj0iNDgwIiB5Mj0iMzIiIHN0cm9rZT0iIzc5NTU0OCIgc3Ryb2tlLXdpZHRoPSIyNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBvbHlnb24gcG9pbnRzPSI0ODAsMzIgNDA4LDgwIDQzMiwxMDQgNDgwLDMyIiBmaWxsPSIjNzk1NTQ4Ii8+PC9zdmc+">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sprint">
+
     <meta name="theme-color" content="#795548">
-    
+
     <style>
         :root { 
             --muji-bg: #f6f5f1;      
@@ -28,6 +32,18 @@
             background-color: var(--muji-bg); 
             margin: 0; padding: 20px; color: var(--muji-text-dark); line-height: 1.6;
             -webkit-tap-highlight-color: transparent;
+            /* 為全螢幕模式留出頂部狀態欄空間 */
+            padding-top: calc(20px + id="status-bar-height");
+        }
+        
+        /* 針對 iOS 全螢幕模式的凹槽處理 */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            body {
+                padding-top: env(safe-area-inset-top);
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
         }
 
         .container { max-width: 480px; margin: auto; }
@@ -123,7 +139,6 @@
         }
         .goal-item input[type="radio"] { width: auto; margin: 0 10px 0 0; accent-color: var(--muji-primary); }
 
-        /* 累計總表表格樣式 */
         .table-container { overflow-x: auto; margin-top: 20px; background: #fff; border-radius: 12px; border: 1px solid var(--muji-border); }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { background-color: #f1f0ec; padding: 12px 10px; text-align: left; color: var(--muji-sub-text); font-weight: 600; border-bottom: 1px solid var(--muji-border); }
@@ -195,15 +210,61 @@
             </div>
             <button class="btn btn-blue" onclick="saveAct()">儲存活動</button>
             <button class="btn" style="color:var(--muji-warn); background:none;" onclick="delAct()">刪除此活動</button>
-            
             <div class="table-container" id="tableOut"></div>
         </div>
     </div>
 </div>
 
 <script>
-    let acts = JSON.parse(localStorage.getItem('reading_pro_v_final')) || {};
-    let curId = localStorage.getItem('cur_pro_v_final') || '';
+    // ==========================================
+    // 離線 Service Worker 註冊代碼 (PWA 核心)
+    // ==========================================
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            // 定義 Service Worker 腳本 (使用 Blob 動態註冊)
+            const swCode = `
+                const CACHE_NAME = 'sprint-pro-cache-v2';
+                const urlsToCache = ['./', './index.html'];
+
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+                    );
+                });
+
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request).then(response => {
+                            // 離線時優先使用快取，在線時嘗試更新
+                            return response || fetch(event.request);
+                        })
+                    );
+                });
+
+                self.addEventListener('activate', event => {
+                    event.waitUntil(
+                        caches.keys().then(cacheNames => {
+                            return Promise.all(
+                                cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
+                            );
+                        })
+                    );
+                });
+            `;
+            const blob = new Blob([swCode], { type: 'text/javascript' });
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).then(reg => {
+                console.log('離線 ServiceWorker 註冊成功:', reg.scope);
+            }).catch(err => {
+                console.log('離線 ServiceWorker 註冊失敗:', err);
+            });
+        });
+    }
+    // ==========================================
+    // 原有應用程式邏輯 (調整版本號以強制更新快取)
+    // ==========================================
+
+    let acts = JSON.parse(localStorage.getItem('reading_pro_v_pwa')) || {};
+    let curId = localStorage.getItem('cur_pro_v_pwa') || '';
     let selectedCategory = 'book';
     let priorityIdx = 0;
     const iconMap = { 'book': '#icon-book', 'game': '#icon-game', 'other': '#icon-other' };
@@ -220,8 +281,8 @@
     }
 
     function save() { 
-        localStorage.setItem('reading_pro_v_final', JSON.stringify(acts)); 
-        localStorage.setItem('cur_pro_v_final', curId);
+        localStorage.setItem('reading_pro_v_pwa', JSON.stringify(acts)); 
+        localStorage.setItem('cur_pro_v_pwa', curId);
     }
 
     function toggleAdmin() { document.body.classList.toggle('show-admin'); if(document.body.classList.contains('show-admin')) renderTable(); }
