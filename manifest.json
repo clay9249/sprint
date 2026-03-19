@@ -1,15 +1,14 @@
 {
   "name": "Sprint Pro",
   "short_name": "Sprint",
-  "description": "MUJI風格目標衝刺工具",
-  "start_url": "./index.html?v=10",
+  "start_url": "./index.html?v=final_target",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f6f5f1",
   "theme_color": "#795548",
   "icons": [
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iI2QzYTI3ZiIvPjxjaXJjbGUgY3g9IjI1YiIgY3k9IjI1NiIgcj0iMTkyIiBmaWxsPSJub25lIiBzdHJva2U9IiM3OTU1NDgiIHN0cm9rZS13aWR0aD0iMjQiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjEyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNzk1NTQ4IiBzdHJva2Utd2lkdGg9IjI0Ii8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSI2NCIgZmlsbD0iIzc5NTU0OCIvPjxsaW5lIHgxPSIyNTYiIHkxPSIyNTYiIHgyPSI0ODAiIHkyPSIzMiIgc3Ryb2tlPSIjNzk1NTQ4IiBzdHJva2Utd2lkdGg9IjI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cG9seWdvbiBwb2ludHM9IjQ4MCwzMiA0MDgsODAgNDMyLDEwNCA0ODAsMzIiIGZpbGw9IiM3OTU1NDgiLz48L3N2Zz4=",
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iI2QzYTI3ZiIvPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTkyIiBmaWxsPSJub25lIiBzdHJva2U9IiM3OTU1NDgiIHN0cm9rZS13aWR0aD0iMjQiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjEyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNzk1NTQ4IiBzdHJva2Utd2lkdGg9IjI0Ii8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSI2NCIgZmlsbD0iIzc5NTU0OCIvPjxsaW5lIHgxPSIyNTYiIHkxPSIyNTYiIHgyPSI0NTAiIHkyPSI2MiIgc3Ryb2tlPSIjNzk1NTQ4IiBzdHJva2Utd2lkdGg9IjI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cG9seWdvbiBwb2ludHM9IjQ1MCw2MiAzODAsODAgNDAwLDEwMCA0NTAsNjIiIGZpbGw9IiM3OTU1NDgiLz48L3N2Zz4=",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
