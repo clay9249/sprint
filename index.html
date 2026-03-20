@@ -10,45 +10,33 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#795548">
-
     <link rel="manifest" href="./manifest.json">
     
     <style>
         :root { 
-            --muji-bg: #f6f5f1;      
-            --muji-card: #ffffff;    
-            --muji-text-dark: #333333; 
-            --muji-sub-text: #7f8c8d; 
-            --muji-border: #e0dbd1;  
-            --muji-accent: #d3a27f;  
-            --muji-accent-dark: #b08e75; 
-            --muji-primary: #795548; 
-            --muji-warn: #b85c5c;    
+            --muji-bg: #f6f5f1; --muji-card: #ffffff; --muji-text-dark: #333333; 
+            --muji-sub-text: #7f8c8d; --muji-border: #e0dbd1; --muji-accent: #d3a27f;  
+            --muji-accent-dark: #b08e75; --muji-primary: #795548; --muji-warn: #b85c5c;    
         }
 
         body { 
             font-family: -apple-system, "Noto Sans CJK TC", sans-serif; 
-            background-color: var(--muji-bg); 
-            margin: 0; padding: 20px; color: var(--muji-text-dark); line-height: 1.6;
+            background-color: var(--muji-bg); margin: 0; padding: 20px; color: var(--muji-text-dark); line-height: 1.6;
             -webkit-tap-highlight-color: transparent;
-            padding-top: calc(20px + id="status-bar-height");
         }
         
         @supports (padding-top: env(safe-area-inset-top)) {
-            body { padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); padding-bottom: env(safe-area-inset-bottom); }
+            body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
         }
 
         .container { max-width: 480px; margin: auto; }
-
         .card { 
-            background-color: var(--muji-card); 
-            padding: 25px; border-radius: 24px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
-            margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.01);
+            background-color: var(--muji-card); padding: 25px; border-radius: 24px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.01);
         }
         
         .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
-        .act-icon-nav { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; }
+        .act-icon-nav { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; flex: 1; }
         .act-icon-nav::-webkit-scrollbar { display: none; }
         
         .nav-icon-item {
@@ -61,10 +49,8 @@
         .nav-icon-item.active .muji-icon { stroke: #ffffff; }
 
         .settings-btn { 
-            border: none; background: none; color: var(--muji-accent-dark); 
-            cursor: pointer; font-size: 26px; padding: 5px; 
-            display: flex; align-items: center; justify-content: center;
-            transform: rotate(110deg);
+            border: none; background: none; color: var(--muji-accent-dark); cursor: pointer; 
+            padding: 5px; display: flex; align-items: center; justify-content: center;
         }
 
         .category-selector { display: flex; gap: 8px; margin: 10px 0; }
@@ -73,24 +59,19 @@
             background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
         .cat-btn.selected { border-color: var(--muji-accent); background: #fffcf8; box-shadow: inset 0 0 0 1px var(--muji-accent); }
-        .cat-btn.selected .muji-icon { stroke: var(--muji-accent); }
 
         .date-scroller { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px 25px 5px; scroll-behavior: smooth; }
         .date-scroller::-webkit-scrollbar { display: none; }
 
         .date-item {
-            min-width: 70px; height: 90px; background-color: #fff;
-            border: 1.5px solid var(--muji-border); border-radius: 18px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-width: 70px; height: 90px; background-color: #fff; border: 1.5px solid var(--muji-border); 
+            border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; flex-shrink: 0; position: relative; transition: 0.2s;
         }
         .date-item .day-label { font-size: 11px; color: var(--muji-sub-text); margin-bottom: 4px; font-weight: 700; }
         .date-item .date-val { font-size: 18px; font-weight: 600; color: var(--muji-primary); }
         
-        /* 樣式修正：今日樣式 */
-        .date-item.is-today { border: 2px solid var(--muji-accent-dark) !important; box-shadow: 0 0 10px rgba(211,162,127,0.15); }
-        
-        /* 樣式修正：最後一天樣式 (符合整體風格) */
+        .date-item.is-today { border: 2px solid var(--muji-accent-dark) !important; box-shadow: 0 0 8px rgba(176,142,117,0.2); }
         .date-item.is-final-day { border-color: var(--muji-accent); }
         .date-item.is-final-day::after {
             content: "完"; position: absolute; top: -10px; right: -8px;
@@ -98,42 +79,43 @@
             font-size: 9px; padding: 3px 6px; border-radius: 8px; font-weight: bold;
         }
 
-        /* 樣式修正：選中樣式 (覆蓋所有其他樣式) */
         .date-item.active { background-color: var(--muji-primary) !important; border-color: var(--muji-primary) !important; transform: translateY(-5px); }
         .date-item.active .day-label, .date-item.active .date-val { color: #ffffff !important; }
-        .date-item.active.is-final-day::after { background-color: #ffffff; color: var(--muji-primary); }
 
         .stage-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; }
         .stage-selector::-webkit-scrollbar { display: none; }
         .stage-btn { 
-            background-color: #fff; border: 1px solid var(--muji-border); 
-            padding: 8px 16px; border-radius: 20px; white-space: nowrap; 
-            font-size: 13px; color: var(--muji-sub-text); transition: 0.2s;
+            background-color: #fff; border: 1px solid var(--muji-border); padding: 8px 16px; 
+            border-radius: 20px; white-space: nowrap; font-size: 13px; color: var(--muji-sub-text);
         }
         .stage-btn.active { background-color: var(--muji-accent); color: white; border-color: var(--muji-accent); }
         .stage-btn.priority-target { border: 2px solid var(--muji-primary); font-weight: bold; }
 
+        /* 樣式修正：加入進度條條紋抖動/衝刺效果 */
         .progress-bar { 
             height: 12px; background-color: #e0dbd1; 
-            background-image: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-            background-size: 20px 20px; animation: move-stripes 2s linear infinite; border-radius: 6px; overflow: hidden; margin: 15px 0; 
+            /* 新增：加入淡焦糖色的條紋背景 */
+            background-image: linear-gradient(45deg, rgba(211, 162, 127, 0.15) 25%, transparent 25%, transparent 50%, rgba(211, 162, 127, 0.15) 50%, rgba(211, 162, 127, 0.15) 75%, transparent 75%, transparent);
+            background-size: 20px 20px; /* 條紋大小 */
+            animation: move-stripes 2s linear infinite; /* 綁定動畫：2秒一次，無限循環 */
+            border-radius: 6px; overflow: hidden; margin: 15px 0; 
         }
-        @keyframes move-stripes { from { background-position: 0 0; } to { background-position: 40px 0; } }
+
+       .progress-bar { height: 12px; background-color: #e0dbd1; background-image: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent); background-size: 20px 20px; animation: move-stripes 2s linear infinite; border-radius: 6px; overflow: hidden; margin: 15px 0; } @keyframes move-stripes { from { background-position: 0 0; } to { background-position: 40px 0; } }
         .progress-fill { height: 100%; background-color: var(--muji-primary); transition: width 0.6s; }
         
         .big-number-display { font-size: 42px; font-weight: 400; color: var(--muji-primary); margin: 5px 0; }
         .input-section { background-color: var(--muji-primary); padding: 25px; border-radius: 20px; margin-top: 25px; }
         
-        input[type="number"], input[type="text"], input[type="date"] { 
-            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid var(--muji-border); border-radius: 10px; box-sizing: border-box; 
-        }
-        input[type="number"].main-input { font-size: 32px; text-align: center; background-color: #ffffff; color: var(--muji-primary); font-weight: 600; border: none; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid var(--muji-border); border-radius: 10px; box-sizing: border-box; }
+        .main-input { font-size: 32px; text-align: center; background-color: #ffffff; color: var(--muji-primary); font-weight: 600; border: none; }
 
         .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 10px; }
         .btn-blue { background-color: var(--muji-primary); color: white; }
         
-        .admin-section { display: none; margin-top: 25px; border-top: 1px solid var(--muji-border); padding-top: 20px; }
+        .admin-section, .table-section { display: none; margin-top: 25px; border-top: 1px solid var(--muji-border); padding-top: 20px; }
         .show-admin .admin-section { display: block; }
+        .show-table .table-section { display: block; }
 
         .goal-item {
             display: flex; align-items: center; justify-content: space-between; 
@@ -146,7 +128,6 @@
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { background-color: #f1f0ec; padding: 12px 10px; text-align: left; color: var(--muji-sub-text); font-weight: 600; border-bottom: 1px solid var(--muji-border); }
         td { border-bottom: 1px solid #f9f9f9; padding: 12px 10px; text-align: left; color: var(--muji-primary); }
-        tr:last-child td { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -155,41 +136,50 @@
     <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
     <symbol id="icon-game" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11v.01M18 13v.01"/></symbol>
     <symbol id="icon-other" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>
+    <symbol id="icon-table" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
 </svg>
 
 <div class="container">
     <div class="card">
         <div class="header-controls">
             <div class="act-icon-nav" id="actNav"></div>
-            <button class="settings-btn" onclick="toggleAdmin()">✎</button>
+            <div style="display: flex; gap: 8px;">
+                <button class="settings-btn" onclick="toggleTable()">
+                    <svg class="muji-icon" style="stroke: var(--muji-accent-dark);"><use xlink:href="#icon-table"/></svg>
+                </button>
+                <button class="settings-btn" onclick="toggleAdmin()">
+                    <svg class="muji-icon" style="stroke: var(--muji-accent-dark);"><use xlink:href="#icon-edit"/></svg>
+                </button>
+            </div>
         </div>
 
-        <div class="label-text" style="font-size: 13px; color: var(--muji-sub-text);">當前進度目標</div>
         <div class="stage-selector" id="stageBtns"></div>
-
         <div class="date-scroller" id="dateScroller"></div>
 
         <div id="mainView" style="text-align:center;">
             <div id="activeActName" style="font-size: 15px; font-weight: 700; color: var(--muji-accent-dark); margin-bottom: 5px;"></div>
-            <div class="label-text" style="font-size: 13px; color: var(--muji-sub-text);">今日應達累計目標</div>
+            <div style="font-size: 13px; color: var(--muji-sub-text);">今日應達目標</div>
             <div class="big-number-display" id="todayCumulativeTarget">0 <span style="font-size:16px" class="unit-text"></span></div>
-
             <div class="progress-bar"><div class="progress-fill" id="dayFill"></div></div>
             <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muji-sub-text);">
                 <span id="dayStatus">計算中...</span>
                 <span id="dayPercent">0%</span>
             </div>
-
             <div class="input-section">
-                <label style="font-weight:500; font-size:14px; color: #ffffff;">輸入目前總累計 <span class="unit-text"></span></label>
+                <label style="font-weight:500; font-size:14px; color: #ffffff;">目前總累計數值 <span class="unit-text"></span></label>
                 <input type="number" id="inputTotal" class="main-input" oninput="updateTotalLog()">
                 <div id="diffStatus" style="font-size:15px; margin-top:8px; font-weight:600;"></div>
             </div>
         </div>
 
+        <div class="table-section" id="tableArea">
+            <h4 style="margin:0 0 10px 0; color: var(--muji-primary);">每日進度表</h4>
+            <div class="table-container" id="tableOut"></div>
+        </div>
+
         <div class="admin-section" id="adminArea">
             <h4 style="margin:0 0 15px 0;">活動管理設定</h4>
-            <label style="font-size:12px; color:var(--muji-sub-text);">選擇活動分類圖示：</label>
             <div class="category-selector">
                 <button class="cat-btn selected" onclick="setCategory('book')" id="cat-book"><svg class="muji-icon"><use xlink:href="#icon-book"/></svg></button>
                 <button class="cat-btn" onclick="setCategory('game')" id="cat-game"><svg class="muji-icon"><use xlink:href="#icon-game"/></svg></button>
@@ -197,51 +187,32 @@
             </div>
             <input type="text" id="nameIn" placeholder="活動名稱">
             <input type="text" id="unitIn" placeholder="單位 (如 pt / 頁)">
-            <div style="display:flex; gap:10px;">
-                <input type="date" id="startIn">
-                <input type="date" id="endIn">
-            </div>
+            <div style="display:flex; gap:10px;"><input type="date" id="startIn"><input type="date" id="endIn"></div>
             <div style="background:#f1f0ec; padding:15px; border-radius:12px; margin: 15px 0;">
-                <label style="font-size:13px;">設定各階段目標值：</label>
+                <label style="font-size:13px;">設定各階段目標 (點選圓圈為優先目標)：</label>
                 <div style="display:flex; gap:5px; margin-top:5px">
-                    <input type="number" id="goalIn" style="margin:0;">
-                    <button onclick="addGoal()" style="padding:0 20px; border-radius:8px; border:none; background-color:var(--muji-accent); color:white; font-weight:bold;">+</button>
+                    <input type="number" id="goalIn" placeholder="數值" style="margin:0;">
+                    <button onclick="addGoal()" style="padding:0 20px; border-radius:8px; border:none; background-color:var(--muji-accent); color:white;">+</button>
                 </div>
                 <div id="tempGoalsArea" style="margin-top:12px;"></div>
             </div>
             <button class="btn btn-blue" onclick="saveAct()">儲存活動</button>
-            <button class="btn" style="color:var(--muji-warn); background:none;" onclick="delAct()">刪除此活動</button>
-            <div class="table-container" id="tableOut"></div>
+            <button class="btn" style="color:var(--muji-warn); background:none;" onclick="delAct()">刪除活動</button>
         </div>
     </div>
 </div>
 
 <script>
-    // 離線 Service Worker 腳本 (Blob 動態註冊)
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            const swCode = `
-                const CACHE_NAME = 'sprint-pro-cache-v3';
-                const urlsToCache = ['./', './index.html', './manifest.json'];
-                self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))); });
-                self.addEventListener('fetch', event => { event.respondWith(caches.match(event.request).then(response => { return response || fetch(event.request); })); });
-                self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(cacheNames => { return Promise.all(cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))); })); });
-            `;
-            const blob = new Blob([swCode], { type: 'text/javascript' });
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
-        });
-    }
-
     let acts = JSON.parse(localStorage.getItem('reading_pro_v_pwa')) || {};
     let curId = localStorage.getItem('cur_pro_v_pwa') || '';
-    let selectedCategory = 'book';
-    let priorityIdx = 0;
+    let selectedCategory = 'book', priorityIdx = 0, selectedStageIdx = 0, tempGoals = [];
     const iconMap = { 'book': '#icon-book', 'game': '#icon-game', 'other': '#icon-other' };
 
     function getToday() { const d = new Date(); d.setHours(0,0,0,0); return d; }
     let curDate = getToday();
-    let selectedStageIdx = 0;
-    let tempGoals = [];
+
+    function toggleAdmin() { document.body.classList.remove('show-table'); document.body.classList.toggle('show-admin'); }
+    function toggleTable() { document.body.classList.remove('show-admin'); const isShow = document.body.classList.toggle('show-table'); if(isShow) renderTable(); }
 
     function setCategory(catId) {
         selectedCategory = catId;
@@ -249,144 +220,148 @@
         if(document.getElementById(`cat-${catId}`)) document.getElementById(`cat-${catId}`).classList.add('selected');
     }
 
-    function save() { 
-        localStorage.setItem('reading_pro_v_pwa', JSON.stringify(acts)); 
-        localStorage.setItem('cur_pro_v_pwa', curId);
-    }
-
-    function toggleAdmin() { document.body.classList.toggle('show-admin'); if(document.body.classList.contains('show-admin')) renderTable(); }
     function addGoal() { const v = parseInt(document.getElementById('goalIn').value); if(v > 0) { tempGoals.push(v); document.getElementById('goalIn').value=''; renderTempGoals(); } }
-    function renderTempGoals() { document.getElementById('tempGoalsArea').innerHTML = tempGoals.map((g, i) => `<div class="goal-item"><div style="display:flex; align-items:center;"><input type="radio" name="priorityChoice" ${i===priorityIdx?'checked':''} onchange="priorityIdx=${i}"><span>目標 ${i+1}: ${g}</span></div><span onclick="tempGoals.splice(${i},1);renderTempGoals()" style="color:var(--muji-warn); cursor:pointer; padding:0 5px;">✕</span></div>`).join(''); }
+    
+    function renderTempGoals() { 
+        document.getElementById('tempGoalsArea').innerHTML = tempGoals.map((g, i) => `
+            <div class="goal-item">
+                <div style="display:flex; align-items:center;">
+                    <input type="radio" name="priorityChoice" ${i===priorityIdx?'checked':''} onchange="priorityIdx=${i}">
+                    <span>目標 ${i+1}: ${g}</span>
+                </div>
+                <span onclick="tempGoals.splice(${i},1);renderTempGoals()" style="color:var(--muji-warn); cursor:pointer; padding:0 5px;">✕</span>
+            </div>`).join(''); 
+    }
 
     function saveAct() {
         const name = document.getElementById('nameIn').value.trim() || '新活動';
-        const unit = document.getElementById('unitIn').value.trim() || 'min';
-        const start = document.getElementById('startIn').value;
-        const end = document.getElementById('endIn').value;
+        const start = document.getElementById('startIn').value, end = document.getElementById('endIn').value;
         if(!start || !end || tempGoals.length === 0) return alert('請填寫完整資訊');
-        acts[name] = { start, end, unit, goals: [...tempGoals], category: selectedCategory, priorityIdx: priorityIdx, currentTotal: acts[name] ? acts[name].currentTotal : 0 };
-        curId = name; selectedStageIdx = priorityIdx; save(); init();
+        acts[name] = { start, end, unit: document.getElementById('unitIn').value, goals: [...tempGoals], category: selectedCategory, priorityIdx: priorityIdx, currentTotal: acts[name]?.currentTotal || 0 };
+        curId = name; selectedStageIdx = priorityIdx; saveToLocal(); init();
     }
 
-    function delAct() { if(confirm('確定刪除？')) { delete acts[curId]; curId=Object.keys(acts)[0]||''; save(); init(); } }
+    function saveToLocal() { localStorage.setItem('reading_pro_v_pwa', JSON.stringify(acts)); localStorage.setItem('cur_pro_v_pwa', curId); }
+
+    function delAct() { if(confirm('確定刪除？')) { delete acts[curId]; curId=Object.keys(acts)[0]||''; saveToLocal(); init(); } }
 
     function init() {
         const keys = Object.keys(acts);
         const nav = document.getElementById('actNav');
         nav.innerHTML = keys.map(k => `<div class="nav-icon-item ${k===curId?'active':''}" onclick="switchAct('${k}')"><svg class="muji-icon"><use xlink:href="${iconMap[acts[k].category||'book']}"/></svg></div>`).join('');
+        
         if(!curId && keys.length > 0) curId = keys[0];
+        
         if(acts[curId]) {
             const a = acts[curId]; tempGoals = [...a.goals]; priorityIdx = a.priorityIdx || 0;
             document.getElementById('activeActName').innerText = curId;
             document.getElementById('nameIn').value = curId;
-            document.getElementById('unitIn').value = a.unit || 'min';
+            document.getElementById('unitIn').value = a.unit;
             document.getElementById('startIn').value = a.start;
             document.getElementById('endIn').value = a.end;
             setCategory(a.category || 'book'); renderTempGoals();
-            const s = new Date(a.start); const today = getToday();
-            curDate = (today >= s && today <= new Date(a.end)) ? today : s;
-            renderStageBtns(); renderDateScroller(); updateUI(); renderTable();
+            
+            // 重要：載入活動時將日期重設為今天
+            curDate = getToday();
+            selectedStageIdx = priorityIdx;
+            
+            renderStageBtns(); renderDateScroller(); updateUI();
         }
     }
 
-    function switchAct(id) { curId = id; const a = acts[curId]; selectedStageIdx = a ? (a.priorityIdx || 0) : 0; save(); init(); }
-    function selectStage(idx) { selectedStageIdx = idx; renderStageBtns(); updateUI(); renderTable(); }
-    function updateTotalLog() { const val = parseInt(document.getElementById('inputTotal').value) || 0; if(acts[curId]) { acts[curId].currentTotal = val; save(); updateUI(); } }
+    function switchAct(id) { curId = id; const a = acts[curId]; selectedStageIdx = a ? (a.priorityIdx || 0) : 0; curDate = getToday(); saveToLocal(); init(); }
 
-    function renderStageBtns() {
-        const a = acts[curId]; if(!a) return;
-        document.getElementById('stageBtns').innerHTML = a.goals.map((g, i) => `<button class="stage-btn ${i===selectedStageIdx?'active':''} ${i===a.priorityIdx?'priority-target':''}" onclick="selectStage(${i})">${i===a.priorityIdx?'★ ':''}目標 ${i+1}</button>`).join('');
-    }
-
-    // ★ 核心邏輯修正：計算不含最後一天，最後一天持平
     function updateUI() {
-    const a = acts[curId]; if(!a) return;
-    const unit = a.unit || 'min'; document.querySelectorAll('.unit-text').forEach(el => el.innerText = unit);
-    
-    // 強制時間重置為午夜 0 點，避免浮點數誤差
-    const s = new Date(a.start); s.setHours(0,0,0,0);
-    const e = new Date(a.end); e.setHours(0,0,0,0);
-    const selectedD = new Date(curDate); selectedD.setHours(0,0,0,0);
-    
-    // 計算總天數與當前選中是第幾天
-    const totalDays = Math.round((e - s) / 86400000) + 1;
-    // 使用 Math.round 代替 Math.ceil 處理日期差，確保整除
-    const dayIndex = Math.round((selectedD - s) / 86400000) + 1;
-    
-    const stageGoal = a.goals[selectedStageIdx];
-    let divisor = totalDays > 1 ? totalDays - 1 : 1;
+        const a = acts[curId]; if(!a) return;
+        const s = new Date(a.start); s.setHours(0,0,0,0);
+        const e = new Date(a.end); e.setHours(0,0,0,0);
+        const totalDays = Math.round((e - s) / 86400000) + 1;
+        const dayIndex = Math.round((new Date(curDate).setHours(0,0,0,0) - s) / 86400000) + 1;
+        const stageGoal = a.goals[selectedStageIdx];
+        let divisor = totalDays > 1 ? totalDays - 1 : 1;
+        
+        // 核心邏輯：Day 1~26 平均，最後一天 Day 27 固定 100%
+        let target = (dayIndex >= totalDays) ? stageGoal : (stageGoal / divisor) * dayIndex;
+        
+        const unit = a.unit || '';
+        
+        // 1. 更新大數字顯示與單位
+        document.getElementById('todayCumulativeTarget').innerHTML = `${Math.round(target)} <span style="font-size:16px">${unit}</span>`;
+        
+        // 2. 新增：更新輸入框上方的 Label 文字，帶入單位
+        const label = document.querySelector('.input-section label');
+        if(label) label.innerHTML = `目前累計 <span style="opacity:0.8; font-size:0.9em;">${unit}</span>`;
 
-    // 計算目標：第 N 天（最後一天）應為 100%
-    let target = (dayIndex >= totalDays) ? stageGoal : (stageGoal / divisor) * dayIndex;
-
-    document.getElementById('todayCumulativeTarget').innerHTML = `${Math.round(target)} <span style="font-size:16px">${unit}</span>`;
-    document.getElementById('inputTotal').value = a.currentTotal || "";
-    
-    const progress = target > 0 ? Math.min(100, (a.currentTotal / target) * 100) : 0;
-    document.getElementById('dayFill').style.width = progress + '%';
-    document.getElementById('dayPercent').innerText = Math.round(progress) + '%';
-    
-    const diff = (a.currentTotal || 0) - target;
-    document.getElementById('diffStatus').innerHTML = diff >= 0 
-        ? `<span style="color:var(--muji-accent)">領先 ${Math.round(diff)} ${unit}</span>` 
-        : `<span style="color:#ffffff; opacity: 0.9;">還差 ${Math.abs(Math.round(diff))} ${unit}</span>`;
-    document.getElementById('dayStatus').innerText = diff >= 0 ? "穩定達成" : "衝刺中";
-}
+        document.getElementById('inputTotal').value = a.currentTotal || "";
+        const progress = target > 0 ? Math.min(100, (a.currentTotal / target) * 100) : 0;
+        document.getElementById('dayFill').style.width = progress + '%';
+        document.getElementById('dayPercent').innerText = Math.round(progress) + '%';
+        
+        const diff = (a.currentTotal || 0) - target;
+        document.getElementById('diffStatus').innerHTML = diff >= 0 ? 
+            `<span style="color:var(--muji-accent)">領先 ${Math.round(diff)} ${unit}</span>` : 
+            `<span style="color:#fff; opacity:0.8;">還差 ${Math.abs(Math.round(diff))} ${unit}</span>`;
+            
+        document.getElementById('dayStatus').innerText = diff >= 0 ? "穩定達成" : "衝刺中";
+    }
 
     function renderDateScroller() {
         const a = acts[curId]; if(!a) return;
         const s = new Date(a.start); s.setHours(0,0,0,0);
-        const e = new Date(a.end); e.setHours(0,0,0,0);
-        const totalDays = Math.ceil((e - s) / 86400000) + 1;
+        const totalDays = Math.round((new Date(a.end) - s) / 86400000) + 1;
         const scroller = document.getElementById('dateScroller'); scroller.innerHTML = '';
         const todayTime = getToday().getTime();
-
+        
         for(let i=0; i<totalDays; i++) {
             let d = new Date(s); d.setDate(s.getDate() + i);
             let dTime = d.getTime();
-            let isFinalDay = (i === totalDays - 1); // 是否為最後一天
-            
             let item = document.createElement('div');
-            // ★ 新增：最後一天與今日的樣式
-            item.className = `date-item ${dTime===curDate.getTime()?'active':''} ${dTime===todayTime?'is-today':''} ${isFinalDay?'is-final-day':''}`;
+            item.className = `date-item ${dTime===curDate.getTime()?'active':''} ${dTime===todayTime?'is-today':''} ${i===totalDays-1?'is-final-day':''}`;
             item.innerHTML = `<span class="day-label">DAY ${i+1}</span><span class="date-val">${d.getMonth()+1}/${d.getDate()}</span>`;
             item.onclick = () => { curDate = d; renderDateScroller(); updateUI(); };
             scroller.appendChild(item);
-            if(dTime===curDate.getTime()) setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 50);
+            
+            // 自動滾動到當前日期
+            if(dTime === curDate.getTime()) {
+                setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 100);
+            }
         }
     }
 
     function renderTable() {
-    const a = acts[curId]; if(!a) return;
-    const s = new Date(a.start); s.setHours(0,0,0,0);
-    const e = new Date(a.end); e.setHours(0,0,0,0);
-    const totalDays = Math.round((e - s) / 86400000) + 1;
-    const stageGoal = a.goals[selectedStageIdx];
-    let divisor = totalDays > 1 ? totalDays - 1 : 1;
-    const todayTime = getToday().getTime();
-
-    let h = `<table><tr><th>日期</th><th>累計目標 (${a.unit})</th><th>備註</th></tr>`;
-    for(let i=1; i<=totalDays; i++) {
-        let d = new Date(s); d.setDate(s.getDate() + i - 1);
-        let dTime = d.getTime();
+        const a = acts[curId]; if(!a) return;
+        const s = new Date(a.start); s.setHours(0,0,0,0);
+        const totalDays = Math.round((new Date(a.end) - s) / 86400000) + 1;
+        const stageGoal = a.goals[selectedStageIdx];
+        const unit = a.unit || ''; // <-- 1. 取得單位
+        let divisor = totalDays > 1 ? totalDays - 1 : 1;
+        const todayTime = getToday().getTime();
         
-        // 邏輯與 updateUI 完全一致
-        let t = (i >= totalDays) ? stageGoal : (stageGoal / divisor) * i;
-        let isFinalDay = (i === totalDays);
-        let isT = dTime === todayTime;
-
-        let trStyle = "";
-        if(isFinalDay) trStyle = "background-color:rgba(211, 162, 127, 0.12); color:var(--muji-accent-dark);";
-        if(isT) trStyle += "font-weight:bold; border-left: 3px solid var(--muji-accent);";
-
-        h += `<tr style="${trStyle}">
-                <td>DAY ${i} (${d.getMonth()+1}/${d.getDate()})</td>
-                <td>${Math.round(t)}</td>
-                <td style="font-size:11px;">${isFinalDay?'★完':''} ${isT?'(今)':''}</td>
-              </tr>`;
+        // 2. 修改表頭，加入單位顯示
+        let h = `<table><tr><th>日期</th><th>累計目標 (${unit})</th><th>備註</th></tr>`;
+        for(let i=1; i<=totalDays; i++) {
+            let d = new Date(s); d.setDate(s.getDate() + i - 1);
+            let t = (i >= totalDays) ? stageGoal : (stageGoal / divisor) * i;
+            let isT = d.getTime() === todayTime;
+            let style = i === totalDays ? "background:rgba(211,162,127,0.12);" : "";
+            if(isT) style += "border-left: 3px solid var(--muji-accent); font-weight: bold;";
+            
+            h += `<tr style="${style}">
+                    <td>DAY ${i} (${d.getMonth()+1}/${d.getDate()})</td>
+                    <td>${Math.round(t)}</td> 
+                    <td>${i===totalDays?'★結束':''} ${isT?'(今)':''}</td>
+                  </tr>`;
+        }
+        document.getElementById('tableOut').innerHTML = h + `</table>`;
     }
-    document.getElementById('tableOut').innerHTML = h + `</table>`;
-}
+
+    function renderStageBtns() {
+        const a = acts[curId]; if(!a) return;
+        document.getElementById('stageBtns').innerHTML = a.goals.map((g, i) => `<button class="stage-btn ${i===selectedStageIdx?'active':''} ${i===a.priorityIdx?'priority-target':''}" onclick="selectedStageIdx=${i};renderStageBtns();updateUI();renderTable();">${i===a.priorityIdx?'★ ':''}目標 ${i+1}</button>`).join('');
+    }
+
+    function updateTotalLog() { acts[curId].currentTotal = parseInt(document.getElementById('inputTotal').value) || 0; localStorage.setItem('reading_pro_v_pwa', JSON.stringify(acts)); updateUI(); }
+
     init();
 </script>
 </body>
