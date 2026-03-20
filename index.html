@@ -300,29 +300,38 @@
 
     // ★ 核心邏輯修正：計算不含最後一天，最後一天持平
     function updateUI() {
-        const a = acts[curId]; if(!a) return;
-        const unit = a.unit || 'min'; document.querySelectorAll('.unit-text').forEach(el => el.innerText = unit);
-        const s = new Date(a.start); s.setHours(0,0,0,0);
-        const e = new Date(a.end); e.setHours(0,0,0,0);
-        
-        const totalDays = Math.ceil((e - s) / 86400000) + 1;
-        const dayIndex = Math.ceil((curDate - s) / 86400000) + 1;
-        const stageGoal = a.goals[selectedStageIdx];
-        
-        // 分母用 totalDays - 1 (例如 27 天，分母用 26)
-        let divisor = totalDays > 1 ? totalDays - 1 : 1;
-        // 如果是最後一天或超過，目標鎖定在 stageGoal
-        let target = (dayIndex >= totalDays) ? stageGoal : (stageGoal / divisor) * dayIndex;
+    const a = acts[curId]; if(!a) return;
+    const unit = a.unit || 'min'; document.querySelectorAll('.unit-text').forEach(el => el.innerText = unit);
+    
+    // 強制時間重置為午夜 0 點，避免浮點數誤差
+    const s = new Date(a.start); s.setHours(0,0,0,0);
+    const e = new Date(a.end); e.setHours(0,0,0,0);
+    const selectedD = new Date(curDate); selectedD.setHours(0,0,0,0);
+    
+    // 計算總天數與當前選中是第幾天
+    const totalDays = Math.round((e - s) / 86400000) + 1;
+    // 使用 Math.round 代替 Math.ceil 處理日期差，確保整除
+    const dayIndex = Math.round((selectedD - s) / 86400000) + 1;
+    
+    const stageGoal = a.goals[selectedStageIdx];
+    let divisor = totalDays > 1 ? totalDays - 1 : 1;
 
-        document.getElementById('todayCumulativeTarget').innerHTML = `${Math.round(target)} <span style="font-size:16px">${unit}</span>`;
-        document.getElementById('inputTotal').value = a.currentTotal || "";
-        const progress = target > 0 ? Math.min(100, (a.currentTotal / target) * 100) : 0;
-        document.getElementById('dayFill').style.width = progress + '%';
-        document.getElementById('dayPercent').innerText = Math.round(progress) + '%';
-        const diff = (a.currentTotal || 0) - target;
-        document.getElementById('diffStatus').innerHTML = diff >= 0 ? `<span style="color:var(--muji-accent)">領先 ${Math.round(diff)} ${unit}</span>` : `<span style="color:#ffffff; opacity: 0.9;">還差 ${Math.abs(Math.round(diff))} ${unit}</span>`;
-        document.getElementById('dayStatus').innerText = diff >= 0 ? "穩定達成" : "衝刺中";
-    }
+    // 計算目標：第 N 天（最後一天）應為 100%
+    let target = (dayIndex >= totalDays) ? stageGoal : (stageGoal / divisor) * dayIndex;
+
+    document.getElementById('todayCumulativeTarget').innerHTML = `${Math.round(target)} <span style="font-size:16px">${unit}</span>`;
+    document.getElementById('inputTotal').value = a.currentTotal || "";
+    
+    const progress = target > 0 ? Math.min(100, (a.currentTotal / target) * 100) : 0;
+    document.getElementById('dayFill').style.width = progress + '%';
+    document.getElementById('dayPercent').innerText = Math.round(progress) + '%';
+    
+    const diff = (a.currentTotal || 0) - target;
+    document.getElementById('diffStatus').innerHTML = diff >= 0 
+        ? `<span style="color:var(--muji-accent)">領先 ${Math.round(diff)} ${unit}</span>` 
+        : `<span style="color:#ffffff; opacity: 0.9;">還差 ${Math.abs(Math.round(diff))} ${unit}</span>`;
+    document.getElementById('dayStatus').innerText = diff >= 0 ? "穩定達成" : "衝刺中";
+}
 
     function renderDateScroller() {
         const a = acts[curId]; if(!a) return;
@@ -348,35 +357,36 @@
     }
 
     function renderTable() {
-        const a = acts[curId]; if(!a) return;
-        const s = new Date(a.start); s.setHours(0,0,0,0);
-        const totalDays = Math.ceil((new Date(a.end) - s) / 86400000) + 1;
-        const stageGoal = a.goals[selectedStageIdx];
-        let divisor = totalDays > 1 ? totalDays - 1 : 1;
-        const todayTime = getToday().getTime();
+    const a = acts[curId]; if(!a) return;
+    const s = new Date(a.start); s.setHours(0,0,0,0);
+    const e = new Date(a.end); e.setHours(0,0,0,0);
+    const totalDays = Math.round((e - s) / 86400000) + 1;
+    const stageGoal = a.goals[selectedStageIdx];
+    let divisor = totalDays > 1 ? totalDays - 1 : 1;
+    const todayTime = getToday().getTime();
 
-        let h = `<table><tr><th>日期</th><th>累計目標 (${a.unit})</th><th>備註</th></tr>`;
-        for(let i=1; i<=totalDays; i++) {
-            let d = new Date(s); d.setDate(s.getDate() + i - 1);
-            
-            // ★ 邏輯修正：最後一天目標持平
-            let t = (i >= totalDays) ? stageGoal : (stageGoal / divisor) * i;
-            let isFinalDay = (i === totalDays);
-            let isT = d.getTime() === todayTime;
+    let h = `<table><tr><th>日期</th><th>累計目標 (${a.unit})</th><th>備註</th></tr>`;
+    for(let i=1; i<=totalDays; i++) {
+        let d = new Date(s); d.setDate(s.getDate() + i - 1);
+        let dTime = d.getTime();
+        
+        // 邏輯與 updateUI 完全一致
+        let t = (i >= totalDays) ? stageGoal : (stageGoal / divisor) * i;
+        let isFinalDay = (i === totalDays);
+        let isT = dTime === todayTime;
 
-            // ★ 表格樣式優化：符合整體風格的高亮
-            let trStyle = "";
-            if(isFinalDay) trStyle = "background-color:rgba(211, 162, 127, 0.12); color:var(--muji-accent-dark);";
-            if(isT) trStyle += "font-weight:bold; border-left: 3px solid var(--muji-accent);";
+        let trStyle = "";
+        if(isFinalDay) trStyle = "background-color:rgba(211, 162, 127, 0.12); color:var(--muji-accent-dark);";
+        if(isT) trStyle += "font-weight:bold; border-left: 3px solid var(--muji-accent);";
 
-            h += `<tr style="${trStyle}">
-                    <td>DAY ${i} (${d.getMonth()+1}/${d.getDate()})</td>
-                    <td>${Math.round(t)}</td>
-                    <td style="font-size:11px;">${isFinalDay?'★完':''} ${isT?'(今)':''}</td>
-                  </tr>`;
-        }
-        document.getElementById('tableOut').innerHTML = h + `</table>`;
+        h += `<tr style="${trStyle}">
+                <td>DAY ${i} (${d.getMonth()+1}/${d.getDate()})</td>
+                <td>${Math.round(t)}</td>
+                <td style="font-size:11px;">${isFinalDay?'★驗收':''} ${isT?'(今)':''}</td>
+              </tr>`;
     }
+    document.getElementById('tableOut').innerHTML = h + `</table>`;
+}
     init();
 </script>
 </body>
