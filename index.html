@@ -382,7 +382,7 @@
         h += `<tr style="${trStyle}">
                 <td>DAY ${i} (${d.getMonth()+1}/${d.getDate()})</td>
                 <td>${Math.round(t)}</td>
-                <td style="font-size:11px;">${isFinalDay?'★驗收':''} ${isT?'(今)':''}</td>
+                <td style="font-size:11px;">${isFinalDay?'★完':''} ${isT?'(今)':''}</td>
               </tr>`;
     }
     document.getElementById('tableOut').innerHTML = h + `</table>`;
